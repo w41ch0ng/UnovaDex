@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.380e173a.css",
+    "main.js": "/static/js/main.fa52100a.js",
+    "static/media/Truth And Ideals-Normal.ttf": "/static/media/Truth And Ideals-Normal.b670ba0ff892af054d97.ttf",
+    "static/media/poke bg 1.jpeg": "/static/media/poke bg 1.0b7c3004052f63996bd4.jpeg",
+    "static/media/646white.gif": "/static/media/646white.46b5aaa77eaf3ed0efee.gif",
+    "static/media/643.gif": "/static/media/643.355739ca5bfe7a6a11dc.gif",
+    "static/media/team slot bg.png": "/static/media/team slot bg.f1f5636143db307b2b65.png",
+    "static/media/shinycharm.png": "/static/media/shinycharm.34069bc9d8929e904d26.png",
+    "static/media/shinycharminverted.png": "/static/media/shinycharminverted.3cc795e20c69b148ee14.png",
+    "static/media/BW2BACKGROUND.png": "/static/media/BW2BACKGROUND.0b06baa938b931738e08.png",
+    "static/media/pokemonbwscrollsound.mp3": "/static/media/pokemonbwscrollsound.c4ddcbc55d621ac673a4.mp3",
+    "index.html": "/index.html",
+    "main.380e173a.css.map": "/static/css/main.380e173a.css.map",
+    "main.fa52100a.js.map": "/static/js/main.fa52100a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.380e173a.css",
+    "static/js/main.fa52100a.js"
+  ]
+}
