@@ -78,27 +78,34 @@ export const getDmgClassImage = (damageClass) => {
   }
 };
 
+const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+};
+
 export const getAllPokemon = async (setAllPokemon) => {
   try {
-    const res = await fetch(
+    const res = await fetchWithRetry(
       "https://pokeapi.co/api/v2/pokemon?limit=649&offset=0"
     );
-    const data = await res.json();
-    const pokemonUrls = data.results.map((pokemon) => pokemon.url);
+    const pokemonUrls = res.results.map((pokemon) => pokemon.url);
 
-    const pokemonDataPromises = pokemonUrls.map(async (url) => {
-      const res = await fetch(url);
-      return res.json();
-    });
+    const pokemonDataPromises = pokemonUrls.map((url) => fetchWithRetry(url));
 
     const pokemonData = await Promise.all(pokemonDataPromises);
+
     const alternateFormesPromises = Object.values(alternateFormesMapping).map(
-      async (formeName) => {
-        const res = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${formeName}`
-        );
-        return res.json();
-      }
+      (formeName) =>
+        fetchWithRetry(`https://pokeapi.co/api/v2/pokemon/${formeName}`)
     );
 
     const alternateFormesData = await Promise.all(alternateFormesPromises);
