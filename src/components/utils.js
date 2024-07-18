@@ -82,11 +82,31 @@ const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const data = await res.json();
+      const status = res.status;
+      const text = await res.text();
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${status}, body: ${text}`);
+      }
+
+      if (!text) {
+        throw new Error(`Empty response body for URL: ${url}`);
+      }
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (jsonError) {
+        throw new Error(`Invalid JSON response for URL: ${url}, body: ${text}`);
+      }
+
       return data;
     } catch (error) {
-      if (i === retries - 1) throw error;
+      console.error(`Fetch error for ${url}: ${error.message}`);
+      if (i === retries - 1) {
+        console.error(`Max retries reached for URL: ${url}`);
+        return null; // Return null to indicate a failed fetch
+      }
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
@@ -97,18 +117,29 @@ export const getAllPokemon = async (setAllPokemon) => {
     const res = await fetchWithRetry(
       "https://pokeapi.co/api/v2/pokemon?limit=649&offset=0"
     );
+    console.log("Fetched main Pokémon list:", res);
     const pokemonUrls = res.results.map((pokemon) => pokemon.url);
 
     const pokemonDataPromises = pokemonUrls.map((url) => fetchWithRetry(url));
 
-    const pokemonData = await Promise.all(pokemonDataPromises);
+    const pokemonDataResults = await Promise.all(pokemonDataPromises);
+    const pokemonData = pokemonDataResults.filter((data) => data !== null);
+
+    console.log("Fetched individual Pokémon data:", pokemonData);
 
     const alternateFormesPromises = Object.values(alternateFormesMapping).map(
       (formeName) =>
         fetchWithRetry(`https://pokeapi.co/api/v2/pokemon/${formeName}`)
     );
 
-    const alternateFormesData = await Promise.all(alternateFormesPromises);
+    const alternateFormesDataResults = await Promise.all(
+      alternateFormesPromises
+    );
+    const alternateFormesData = alternateFormesDataResults.filter(
+      (data) => data !== null
+    );
+
+    console.log("Fetched alternate forms data:", alternateFormesData);
 
     const mergedData = pokemonData.concat(alternateFormesData);
 
