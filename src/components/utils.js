@@ -82,10 +82,14 @@ const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`HTTP error! status: ${res.status}, body: ${text}`);
+      }
       const data = await res.json();
       return data;
     } catch (error) {
+      console.error(`Fetch error for ${url}: ${error.message}`);
       if (i === retries - 1) throw error;
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
