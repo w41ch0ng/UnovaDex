@@ -82,11 +82,24 @@ const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const res = await fetch(url);
+      const status = res.status;
+      const text = await res.text();
+
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`HTTP error! status: ${res.status}, body: ${text}`);
+        throw new Error(`HTTP error! status: ${status}, body: ${text}`);
       }
-      const data = await res.json();
+
+      if (!text) {
+        throw new Error(`Empty response body for URL: ${url}`);
+      }
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (jsonError) {
+        throw new Error(`Invalid JSON response for URL: ${url}, body: ${text}`);
+      }
+
       return data;
     } catch (error) {
       console.error(`Fetch error for ${url}: ${error.message}`);
@@ -101,11 +114,14 @@ export const getAllPokemon = async (setAllPokemon) => {
     const res = await fetchWithRetry(
       "https://pokeapi.co/api/v2/pokemon?limit=649&offset=0"
     );
+    console.log("Fetched main Pokémon list:", res);
     const pokemonUrls = res.results.map((pokemon) => pokemon.url);
 
     const pokemonDataPromises = pokemonUrls.map((url) => fetchWithRetry(url));
 
     const pokemonData = await Promise.all(pokemonDataPromises);
+
+    console.log("Fetched individual Pokémon data:", pokemonData);
 
     const alternateFormesPromises = Object.values(alternateFormesMapping).map(
       (formeName) =>
@@ -113,6 +129,8 @@ export const getAllPokemon = async (setAllPokemon) => {
     );
 
     const alternateFormesData = await Promise.all(alternateFormesPromises);
+
+    console.log("Fetched alternate forms data:", alternateFormesData);
 
     const mergedData = pokemonData.concat(alternateFormesData);
 
