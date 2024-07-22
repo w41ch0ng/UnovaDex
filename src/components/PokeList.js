@@ -12,6 +12,7 @@ import bwIcon from "../images/sprites/pokedex/pokemonbwdsnew.png";
 import bw2Icon from "../images/sprites/pokedex/pokemonbwds2new.png";
 import nationalDex from "../images/sprites/pokedex/purpledex.png";
 import pokedex from "../images/sprites/pokedex/pokedex.png";
+import LoadingSpinner from "./LoadingSpinner";
 import {
   typeImageMap,
   getTypeImage,
@@ -63,13 +64,23 @@ function PokeList() {
   const [nationalPokedex, setNationalPokedex] = useState([]);
   const [gameType, setGameType] = useState("bw");
   const [aboutModalIsOpen, setAboutModalIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllPokemon(setAllPokemon);
-    getAllNatures(setAllNatures);
-    fetchBWUnovaPokedex().then((data) => setBWUnovaPokedex(data));
-    fetchBW2UnovaPokedex().then((data) => setBW2UnovaPokedex(data));
-    fetchNationalPokedex().then((data) => setNationalPokedex(data));
+    const fetchData = async () => {
+      setLoading(true);
+      await getAllPokemon(setAllPokemon);
+      await getAllNatures(setAllNatures);
+      const bwUnovaData = await fetchBWUnovaPokedex();
+      setBWUnovaPokedex(bwUnovaData);
+      const bw2UnovaData = await fetchBW2UnovaPokedex();
+      setBW2UnovaPokedex(bw2UnovaData);
+      const nationalData = await fetchNationalPokedex();
+      setNationalPokedex(nationalData);
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   function aboutModalHandler() {
@@ -160,69 +171,77 @@ function PokeList() {
                   </div>
                 </div>
                 <div className="all-pokemon-container">
-                  {filterPokemonByPokedexType(
-                    searchedPokemon.length > 0 ? searchedPokemon : allPokemon,
-                    pokedexType,
-                    gameType,
-                    bwUnovaPokedex,
-                    bw2UnovaPokedex,
-                    nationalPokedex
-                  ).map((pokemonStats) => (
-                    <PokemonCard
-                      key={pokemonStats.name}
-                      id={pokemonStats.id.toString().padStart(3, "0")}
-                      icon={
-                        pokemonStats.sprites.versions["generation-viii"].icons
-                          .front_default
-                      }
-                      homeImage={pokemonStats.sprites.other.home.front_default}
-                      animatedImage={
-                        pokemonStats.sprites.versions["generation-v"][
-                          "black-white"
-                        ].animated.front_default
-                      }
-                      animatedImageBack={
-                        pokemonStats.sprites.versions["generation-v"][
-                          "black-white"
-                        ].animated.back_default
-                      }
-                      shinyAnimatedImage={
-                        pokemonStats.sprites.versions["generation-v"][
-                          "black-white"
-                        ].animated.front_shiny
-                      }
-                      shinyAnimatedImageBack={
-                        pokemonStats.sprites.versions["generation-v"][
-                          "black-white"
-                        ].animated.back_shiny
-                      }
-                      name={pokemonStats.name.replace(/^./, (str) =>
-                        str.toUpperCase()
-                      )}
-                      isLegendary={pokemonStats.is_legendary}
-                      type={getPokemonTypes(pokemonStats)}
-                      typeImages={getPokemonTypeImages(pokemonStats)}
-                      typeImagesClassName="type-image-container"
-                      weight={pokemonStats.weight}
-                      height={pokemonStats.height}
-                      stats={pokemonStats.stats
-                        .map((stat) => stat.base_stat)
-                        .slice(0, 6)}
-                      statsName={pokemonStats.stats
-                        .map((stat, index) =>
-                          index === 0
-                            ? stat.stat.name.toUpperCase()
-                            : stat.stat.name
-                        )
-                        .slice(0, 6)}
-                      moves={pokemonStats.moves.map((move) => move.move.name)}
-                      abilities={pokemonStats.abilities.map(
-                        (ability) => ability.ability.name
-                      )}
-                      forms={pokemonStats.forms.map((form) => form.name)}
-                      onAddToTeam={() => addToTeam(pokemonStats, team, setTeam)}
-                    />
-                  ))}
+                  {loading ? (
+                    <LoadingSpinner />
+                  ) : (
+                    filterPokemonByPokedexType(
+                      searchedPokemon.length > 0 ? searchedPokemon : allPokemon,
+                      pokedexType,
+                      gameType,
+                      bwUnovaPokedex,
+                      bw2UnovaPokedex,
+                      nationalPokedex
+                    ).map((pokemonStats) => (
+                      <PokemonCard
+                        key={pokemonStats.name}
+                        id={pokemonStats.id.toString().padStart(3, "0")}
+                        icon={
+                          pokemonStats.sprites.versions["generation-viii"].icons
+                            .front_default
+                        }
+                        homeImage={
+                          pokemonStats.sprites.other.home.front_default
+                        }
+                        animatedImage={
+                          pokemonStats.sprites.versions["generation-v"][
+                            "black-white"
+                          ].animated.front_default
+                        }
+                        animatedImageBack={
+                          pokemonStats.sprites.versions["generation-v"][
+                            "black-white"
+                          ].animated.back_default
+                        }
+                        shinyAnimatedImage={
+                          pokemonStats.sprites.versions["generation-v"][
+                            "black-white"
+                          ].animated.front_shiny
+                        }
+                        shinyAnimatedImageBack={
+                          pokemonStats.sprites.versions["generation-v"][
+                            "black-white"
+                          ].animated.back_shiny
+                        }
+                        name={pokemonStats.name.replace(/^./, (str) =>
+                          str.toUpperCase()
+                        )}
+                        isLegendary={pokemonStats.is_legendary}
+                        type={getPokemonTypes(pokemonStats)}
+                        typeImages={getPokemonTypeImages(pokemonStats)}
+                        typeImagesClassName="type-image-container"
+                        weight={pokemonStats.weight}
+                        height={pokemonStats.height}
+                        stats={pokemonStats.stats
+                          .map((stat) => stat.base_stat)
+                          .slice(0, 6)}
+                        statsName={pokemonStats.stats
+                          .map((stat, index) =>
+                            index === 0
+                              ? stat.stat.name.toUpperCase()
+                              : stat.stat.name
+                          )
+                          .slice(0, 6)}
+                        moves={pokemonStats.moves.map((move) => move.move.name)}
+                        abilities={pokemonStats.abilities.map(
+                          (ability) => ability.ability.name
+                        )}
+                        forms={pokemonStats.forms.map((form) => form.name)}
+                        onAddToTeam={() =>
+                          addToTeam(pokemonStats, team, setTeam)
+                        }
+                      />
+                    ))
+                  )}
                 </div>
               </div>
             </div>
