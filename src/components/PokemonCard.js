@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import "./styles.css";
-//import pokeball from "../images/pokelistspritenew.png";
 import Modal from "./Modal";
 import { CapitaliseEachWordContext } from "./PokeList";
 import pokedexentry from "../images/slots/pokedexentry.png";
@@ -30,12 +29,14 @@ function PokemonCard({
   pokemon,
   setTeam,
 }) {
-  const [isShown, setIsShown] = useState(false); // HOVER STATE USE THIS "IS SHOWN"
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  // Function to open the modal for a Pokémon
   function modalHandler() {
     setModalIsOpen(true);
   }
+
+  // Function to close the modal - passed down to the modal as modalIsOpen state is here
   function closeModalHandler() {
     setModalIsOpen(false);
   }

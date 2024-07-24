@@ -1,23 +1,8 @@
 import React, { useState, useRef, useContext } from "react";
-import html2canvas from "html2canvas";
 import Modal from "./Modal";
 import "./styles.css";
 import { CapitaliseEachWordContext } from "./PokeList";
 import {
-  typeImageMap,
-  getTypeImage,
-  dmgClassImageMap,
-  getDmgClassImage,
-  teamItem,
-  addToTeam,
-  removeFromTeam,
-  toggleShiny,
-  getMoveSets,
-  getAbilities,
-  getPokemonTypes,
-  getPokemonTypeImages,
-  getAllNatures,
-  captureTeamBuilder,
   handlePokeballSelection,
   toggleDropdown,
   pokeballTypes,
@@ -30,7 +15,6 @@ import {
 import xButton from "../images/sprites/redxbutton.png";
 import shinyCharm from "../images/sprites/shinycharm.png";
 import shinyCharmInverted from "../images/sprites/shinycharminverted.png";
-//import background from "../images/modalbackground.png";
 import teamslotbw2 from "../images/slots/team slot bw2.png";
 import question from "../images/sprites/question mark GIF.gif";
 

@@ -1,11 +1,10 @@
 import "./styles.css";
-import { CapitaliseEachWordContext } from "./PokeList";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { TypeImageContext } from "./PokeList";
 import { DmgClassImageContext } from "./PokeList";
 import moveslotimage from "../images/slots/moveslot.png";
 import selectedMoveslotImage from "../images/slots/move slot green highlight.png";
-import { handleMoveClick, handleAbilityClick, fetchMoveData } from "./utils";
+import { fetchMoveData } from "./utils";
 
 function MoveDetailsModal({
   moves,
@@ -14,25 +13,29 @@ function MoveDetailsModal({
   moveData,
   setSelectedMove,
   moveDetailsModalHandler,
-  onClose,
 }) {
   const { getTypeImage } = useContext(TypeImageContext);
   const { getDmgClassImage } = useContext(DmgClassImageContext);
-  const { capitaliseEachWord } = useContext(CapitaliseEachWordContext);
-  const [hoveredMove, setHoveredMove] = useState(null);
+  // const [hoveredMove, setHoveredMove] = useState(null);
+
+  // Check if 'moveData' contains 'effect_entries' to display and that it is not empty.
   const hasEffectEntries =
     moveData.effect_entries && moveData.effect_entries.length > 0;
 
+  /* Check if first entry in 'effect_entries' contains '$effect_chance'
+  (chance of the move's effect occurring). */
   const hasEffectChance =
     hasEffectEntries &&
     moveData.effect_entries[0].short_effect.includes("$effect_chance");
 
+  /* If the move has effect chance, replace the '$effect_chance' placeholder with the
+  actual chance value from 'moveData.effect_chance' in the 'short_effect' description. */
   const modifiedShortEffect = hasEffectChance
     ? moveData.effect_entries[0].short_effect.replace(
         "$effect_chance",
         `${moveData.effect_chance}`
       )
-    : null;
+    : null; // If there's no effect chance, set 'modifiedShortEffect' to null.
 
   return (
     <div className="move-full-container">

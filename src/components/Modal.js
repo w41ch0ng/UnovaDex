@@ -11,10 +11,6 @@ import {
   fetchAbilityData,
   handleMoveClick,
   handleAbilityClick,
-  moveDetailsModalHandler,
-  closeMoveDetailsModalHandler,
-  abilityDetailsModalHandler,
-  closeAbilityDetailsModalHandler,
 } from "./utils";
 
 function Modal({
@@ -45,36 +41,42 @@ function Modal({
   const [selectedAbility, setSelectedAbility] = useState(null);
   const { capitaliseEachWord } = useContext(CapitaliseEachWordContext);
 
+  // useEffect hook for when 'moves' or 'abilities' change
   useEffect(() => {
+    // Check if there are any moves in the 'moves' array
     if (moves.length > 0) {
+      // Fetch data for the first move in the array
       fetchMoveData(moves[0]).then((data) => {
+        // Set the fetched data as the selected move
         setSelectedMove(data);
+        // Update modal displaying the move details
         moveDetailsModalHandler();
       });
     }
 
+    // Check if there are any abilities in the 'abilities' array
     if (abilities.length > 0) {
+      // Fetch data for the first ability in the array
       fetchAbilityData(abilities[0]).then((data) => {
+        // Set the fetched data as the selected ability
         setSelectedAbility(data);
+        // Update modal displaying the ability details
         abilityDetailsModalHandler();
       });
     }
+    // Re-run when either moves or abilities arrays changes.
   }, [moves, abilities]);
 
+  // Function to open the move details modal
   function moveDetailsModalHandler() {
+    // Set the state to indicate that the move details modal is open
     setMoveDetailsModalIsOpen(true);
   }
 
-  function closeMoveDetailsModalHandler() {
-    setMoveDetailsModalIsOpen(false);
-  }
-
+  // Function to open the ability details modal
   function abilityDetailsModalHandler() {
+    // Set the state to indicate that the ability details modal is open
     setAbilityDetailsModalIsOpen(true);
-  }
-
-  function closeAbilityDetailsModalHandler() {
-    setAbilityDetailsModalIsOpen(false);
   }
 
   return (
@@ -147,7 +149,6 @@ function Modal({
               moves={moves}
               selectedMove={selectedMove}
               moveData={selectedMove}
-              onClose={closeMoveDetailsModalHandler}
               handleMoveClick={(moveName) =>
                 handleMoveClick(
                   moveName,
@@ -163,7 +164,6 @@ function Modal({
               abilities={abilities}
               selectedAbility={selectedAbility}
               abilityData={selectedAbility}
-              onClose={closeAbilityDetailsModalHandler}
               handleAbilityClick={(abilityName) =>
                 handleAbilityClick(
                   abilityName,

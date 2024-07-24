@@ -1,4 +1,3 @@
-import { closeAboutModalHandler } from "./utils";
 import redXbutton from "../images/sprites/redxbutton.png";
 import "./styles.css";
 
