@@ -1,20 +1,16 @@
-import { useContext } from "react";
 import "./styles.css";
-import { CapitaliseEachWordContext } from "./PokeList";
 import moveslotimage from "../images/slots/moveslot.png";
 import selectedMoveslotImage from "../images/slots/move slot green highlight.png";
-import { handleMoveClick, handleAbilityClick, fetchAbilityData } from "./utils";
+import { fetchAbilityData } from "./utils";
 
 function AbilityDetailsModal({
   abilities,
   selectedAbility,
   abilityData,
-  onClose,
   handleAbilityClick,
   setSelectedAbility,
   abilityDetailsModalHandler,
 }) {
-  const { capitaliseEachWord } = useContext(CapitaliseEachWordContext);
   return (
     <div className="ability-full-container">
       <div className="move-ability-container">

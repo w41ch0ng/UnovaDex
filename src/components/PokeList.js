@@ -66,6 +66,8 @@ function PokeList() {
   const [aboutModalIsOpen, setAboutModalIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  /* useEffect where fetchData is declared to initialise the getters and setters 
+  for the application */
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -83,10 +85,12 @@ function PokeList() {
     fetchData();
   }, []);
 
+  // Function to open the About modal
   function aboutModalHandler() {
     setAboutModalIsOpen(true);
   }
 
+  // Function to close the About modal
   function closeAboutModalHandler() {
     setAboutModalIsOpen(false);
   }
