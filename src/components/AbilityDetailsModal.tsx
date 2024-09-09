@@ -1,6 +1,6 @@
 import "../css/styles.css";
 import moveslotimage from "../images/slots/moveslot.png";
-import selectedMoveslotImage from "../images/slots/move slot green highlight.png";
+import selectedMoveslotImage from "../images/slots/move-slot-green-highlight.png";
 import { fetchAbilityData } from "../utils/utils.ts";
 import { AbilityDetailsModalProps } from "../utils/interfaces.ts";
 
