@@ -13,7 +13,7 @@ a {
 
 @font-face {
   font-family: "PokeFont";
-  src: url("/src/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
+  src: url("/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
 }
 
 body {
