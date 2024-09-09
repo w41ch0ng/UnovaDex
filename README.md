@@ -10,7 +10,7 @@
 <h3 align="center">UnovaDex</h3>
 
   <p align="center">
-    UnovaDex, a Generation 5 Pokédex and Team Builder - built with JavaScript, React, and PokéAPI
+    UnovaDex, a Generation 5 Pokédex and Team Builder - built with TypeScript, React, and PokéAPI
     <br />
     <a href="https://github.com/w41ch0ng/UnovaDex"><strong>Explore the docs »</strong></a>
     <br />
@@ -39,7 +39,7 @@
 
 UnovaDex is a Generation 5 Pokédex and Team Builder, utilising the <a href="https://developer.spotify.com/documentation/web-api/">PokéAPI</a>. Users can get Pokémon stats, moves, and abilities data, fetched from PokéAPI, plan and build a team, and export their team as an image file.
 
-This project was made with JavaScript, React, and the PokéAPI (shoutout to
+This project was made with TypeScript, React, Vite, and the PokéAPI (shoutout to
 the PokéAPI devs). I hope to make this better and better so any suggestions are appreciated !.!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
