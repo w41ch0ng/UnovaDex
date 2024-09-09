@@ -103,7 +103,7 @@ body {
 
 /*       !!!POKEDEX!!!        */
 
-.pokedex-container {
+.pokelist-container {
   float: right;
   width: 30%;
   overflow: hidden;
@@ -1010,7 +1010,7 @@ body {
     width: 90%;
   }
 
-  .pokedex-container {
+  .pokelist-container {
     margin-top: 24px;
     width: 350px;
     align-self: center;
@@ -1036,7 +1036,7 @@ body {
 }
 
 @media only screen and (min-width: 450px) and (max-width: 900px) {
-  .pokedex-container {
+  .pokelist-container {
     margin-right: 22.5%;
   }
 }

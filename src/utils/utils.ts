@@ -1,4 +1,13 @@
 import html2canvas from "html2canvas";
+import {
+  AbilityData,
+  NatureData,
+  PokemonStats,
+  TeamItem,
+  PokedexResponse,
+  MoveData,
+  TypeImage,
+} from "./interfaces";
 import hoverSound from "../sfx/pokemonbwscrollsound.mp3";
 import pokeball from "../images/pokeballs/Poke_Ball.png";
 import greatball from "../images/pokeballs/Great_Ball.png";
@@ -26,64 +35,86 @@ import repeatball from "../images/pokeballs/Repeat_Ball.png";
 import safariball from "../images/pokeballs/Safari_Ball.png";
 import sportball from "../images/pokeballs/Sport_Ball.png";
 import timerball from "../images/pokeballs/Timer_Ball.png";
+import waterImg from "../images/typeimages/water.png";
+import fireImg from "../images/typeimages/fire.png";
+import grassImg from "../images/typeimages/grass.png";
+import bugImg from "../images/typeimages/bug.png";
+import darkImg from "../images/typeimages/dark.png";
+import dragonImg from "../images/typeimages/dragon.png";
+import electricImg from "../images/typeimages/electric.png";
+import fairyImg from "../images/typeimages/fairy.png";
+import fightingImg from "../images/typeimages/fighting.png";
+import flyingImg from "../images/typeimages/flying.png";
+import ghostImg from "../images/typeimages/ghost.png";
+import groundImg from "../images/typeimages/ground.png";
+import iceImg from "../images/typeimages/ice.png";
+import normalImg from "../images/typeimages/normal.png";
+import poisonImg from "../images/typeimages/poison.png";
+import psychicImg from "../images/typeimages/psychic.png";
+import rockImg from "../images/typeimages/rock.png";
+import steelImg from "../images/typeimages/steel.png";
+import physicalImg from "../images/dmgclassimages/physical.png";
+import specialImg from "../images/dmgclassimages/special.png";
+import statusImg from "../images/dmgclassimages/status.png";
+import {
+  GameType,
+  PokeballType,
+  PokedexType,
+  PokemonType,
+  DamageType,
+} from "./types";
 
-//   !!!POKELIST!!!   //
+//   !!!APP!!!   //
 
-// Type images map
-export const typeImageMap = {
-  water: "water.png",
-  fire: "fire.png",
-  grass: "grass.png",
-  bug: "bug.png",
-  dark: "dark.png",
-  dragon: "dragon.png",
-  electric: "electric.png",
-  fairy: "fairy.png",
-  fighting: "fighting.png",
-  flying: "flying.png",
-  ghost: "ghost.png",
-  ground: "ground.png",
-  ice: "ice.png",
-  normal: "normal.png",
-  poison: "poison.png",
-  psychic: "psychic.png",
-  rock: "rock.png",
-  steel: "steel.png",
+// Define the type image map using TS Record (object type where PokemonType is set
+// of keys, string is type of values - key-value pair)
+export const typeImageMap: Record<PokemonType, string> = {
+  water: waterImg,
+  fire: fireImg,
+  grass: grassImg,
+  bug: bugImg,
+  dark: darkImg,
+  dragon: dragonImg,
+  electric: electricImg,
+  fairy: fairyImg,
+  fighting: fightingImg,
+  flying: flyingImg,
+  ghost: ghostImg,
+  ground: groundImg,
+  ice: iceImg,
+  normal: normalImg,
+  poison: poisonImg,
+  psychic: psychicImg,
+  rock: rockImg,
+  steel: steelImg,
 };
 
 // Function to get the type image based on the type name
-export const getTypeImage = (typeName) => {
-  try {
-    return require(`../images/typeimages/${
-      typeImageMap[typeName.toLowerCase()]
-    }`);
-  } catch (error) {
-    console.log("Error returning type images.");
-    return null;
-  }
+export const getTypeImage = (typeName: string): string | undefined => {
+  const type = typeName.toLowerCase() as PokemonType;
+  return typeImageMap[type] || undefined;
 };
 
-// Damage class images map
-export const dmgClassImageMap = {
-  physical: "physical.png",
-  special: "special.png",
-  status: "status.png",
+// Define damage class images map using TS Record (object type where DamageType is set
+// of keys, string is type of values)
+export const dmgClassImageMap: Record<DamageType, string> = {
+  physical: physicalImg,
+  special: specialImg,
+  status: statusImg,
 };
 
 // Function to get the damage class image based on the damage class name
-export const getDmgClassImage = (damageClass) => {
-  try {
-    return require(`../images/dmgclassimages/${
-      dmgClassImageMap[damageClass.toLowerCase()]
-    }`);
-  } catch (error) {
-    console.error("Error loading damage class image:", error);
-    return null;
-  }
+export const getDmgClassImage = (damageClass: string): string | undefined => {
+  const type = damageClass.toLowerCase() as DamageType;
+  return dmgClassImageMap[type] || undefined;
 };
 
 // Function to fetch data with retry logic
-const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
+const fetchWithRetry = async (
+  url: string,
+  retries: number = 3,
+  delay: number = 1000
+) => {
   // Loop 3 times for 3 retries
   for (let i = 0; i < retries; i++) {
     try {
@@ -108,14 +139,20 @@ const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
         data = JSON.parse(text);
       } catch (jsonError) {
         // Throw an error if the JSON parsing fails
-        throw new Error(`Invalid JSON response for URL: ${url}, body: ${text}`);
+        throw new Error(
+          `Invalid JSON response for URL: ${url}, body: ${text}, error: ${jsonError}`
+        );
       }
 
       // Return the parsed JSON data
       return data;
     } catch (error) {
-      // Log the error message for a failed entry fetch attempt
-      console.error(`Fetch error for ${url}: ${error.message}`);
+      // Check if error is instance of Error to access 'message' safely
+      if (error instanceof Error) {
+        console.error(`Fetch error for ${url}: ${error.message}`);
+      } else {
+        console.error(`Unknown error occurred while fetching ${url}`);
+      }
       // If the maximum number of retries has been reached, log the message and return null
       if (i === retries - 1) {
         console.error(`Max retries reached for URL: ${url}`);
@@ -128,7 +165,9 @@ const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
 };
 
 // Function to fetch all Pokémon data and set it in the allPokemon state
-export const getAllPokemon = async (setAllPokemon) => {
+export const getAllPokemon = async (
+  setAllPokemon: React.Dispatch<React.SetStateAction<PokemonStats[]>>
+) => {
   try {
     // Fetch the main Pokémon list with the fetch with retry function
     const res = await fetchWithRetry(
@@ -137,10 +176,14 @@ export const getAllPokemon = async (setAllPokemon) => {
     console.log("Fetched main Pokémon list:", res);
 
     // Extract the URLs of individual Pokémon from the main list
-    const pokemonUrls = res.results.map((pokemon) => pokemon.url);
+    const pokemonUrls = res.results.map(
+      (pokemon: { url: string }) => pokemon.url
+    );
 
     // Create an array of promises to fetch data for each individual Pokémon
-    const pokemonDataPromises = pokemonUrls.map((url) => fetchWithRetry(url));
+    const pokemonDataPromises = pokemonUrls.map((url: string) =>
+      fetchWithRetry(url)
+    );
 
     // Wait for all promises to resolve
     const pokemonDataResults = await Promise.all(pokemonDataPromises);
@@ -182,7 +225,11 @@ export const getAllPokemon = async (setAllPokemon) => {
 };
 
 // Function to search for Pokémon from search bar
-export const searchPokemon = (searchTerm, allPokemon, setSearchedPokemon) => {
+export const searchPokemon = (
+  searchTerm: string,
+  allPokemon: PokemonStats[],
+  setSearchedPokemon: React.Dispatch<React.SetStateAction<PokemonStats[]>>
+) => {
   /* Filter the Pokémon list by checking if their name includes the
   search term (case insensitive) */
   const filteredPokemon = allPokemon.filter((pokemon) =>
@@ -193,11 +240,11 @@ export const searchPokemon = (searchTerm, allPokemon, setSearchedPokemon) => {
 };
 
 // Function to fetch the Black and White (BW) Unova Pokédex data
-export const fetchBWUnovaPokedex = async () => {
+export const fetchBWUnovaPokedex = async (): Promise<string[]> => {
   try {
     // Fetch data from the BW Pokédex endpoint
     const res = await fetch("https://pokeapi.co/api/v2/pokedex/8");
-    const data = await res.json(); // Parse the response as JSON
+    const data: PokedexResponse = await res.json(); // Use the PokedexResponse type
     // Extract and return the names of the Pokémon species from the data
     return data.pokemon_entries.map((entry) => entry.pokemon_species.name);
   } catch (error) {
@@ -207,11 +254,11 @@ export const fetchBWUnovaPokedex = async () => {
 };
 
 // Function to fetch the Black and White 2 (BW2) Unova Pokédex data
-export const fetchBW2UnovaPokedex = async () => {
+export const fetchBW2UnovaPokedex = async (): Promise<string[]> => {
   try {
     // Fetch data from the BW2 Pokédex endpoint
     const res = await fetch("https://pokeapi.co/api/v2/pokedex/9");
-    const data = await res.json(); // Parse the response as JSON
+    const data: PokedexResponse = await res.json(); // Use the PokedexResponse type
     // Extract and return the names of the Pokémon species from the data
     return data.pokemon_entries.map((entry) => entry.pokemon_species.name);
   } catch (error) {
@@ -221,11 +268,11 @@ export const fetchBW2UnovaPokedex = async () => {
 };
 
 // Function to fetch the National Pokédex data
-export const fetchNationalPokedex = async () => {
+export const fetchNationalPokedex = async (): Promise<string[]> => {
   try {
     // Fetch data from the National Pokédex endpoint
     const res = await fetch("https://pokeapi.co/api/v2/pokedex/1");
-    const data = await res.json(); // Parse the response as JSON
+    const data: PokedexResponse = await res.json(); // Use the PokedexResponse type
     // Extract and return the names of the Pokémon species from the data
     return data.pokemon_entries.map((entry) => entry.pokemon_species.name);
   } catch (error) {
@@ -235,14 +282,17 @@ export const fetchNationalPokedex = async () => {
 };
 
 // Function to toggle between game types and update the Pokédex type accordingly
-export const toggleGameType = (setGameType, setPokedexType) => {
+export const toggleGameType = (
+  setGameType: React.Dispatch<React.SetStateAction<GameType>>,
+  setPokedexType: React.Dispatch<React.SetStateAction<PokedexType>>
+) => {
   // Update the game type state
-  setGameType((prevType) => {
+  setGameType((prevType: GameType) => {
     // Determine the new game type based on the previous game type
-    const newGameType = prevType === "bw" ? "bw2" : "bw";
+    const newGameType: GameType = prevType === "bw" ? "bw2" : "bw";
 
     // Update the Pokédex type state based on the new game type
-    setPokedexType((prevPokedexType) => {
+    setPokedexType((prevPokedexType: PokedexType) => {
       if (newGameType === "bw") {
         // Toggle between "bwRegional" and "national" for BW game type
         return prevPokedexType === "bwRegional" ? "national" : "bwRegional";
@@ -258,7 +308,11 @@ export const toggleGameType = (setGameType, setPokedexType) => {
 };
 
 // Function to toggle the Pokédex type based on the current game type and Pokédex type
-export const togglePokedexType = (setPokedexType, pokedexType, gameType) => {
+export const togglePokedexType = (
+  setPokedexType: React.Dispatch<React.SetStateAction<PokedexType>>,
+  pokedexType: PokedexType,
+  gameType: GameType
+) => {
   if (gameType === "bw") {
     // Toggle between "bwRegional" and "national" for BW game type
     if (pokedexType === "bwRegional") {
@@ -278,7 +332,7 @@ export const togglePokedexType = (setPokedexType, pokedexType, gameType) => {
 
 /* BW alternate formes to standard name map for correct parsing
  when fetching data */
-const nationalToBWPokemonMapping = {
+const nationalToBWPokemonMapping: { [key: string]: string } = {
   "basculin-blue-striped": "basculin",
   "basculin-red-striped": "basculin",
   "darmanitan-standard": "darmanitan",
@@ -307,7 +361,7 @@ const nationalToBWPokemonMapping = {
 
 /* BW2 alternate formes to standard name map for correct parsing
  when fetching data */
-export const nationalToBW2PokemonMapping = {
+export const nationalToBW2PokemonMapping: { [key: string]: string } = {
   "basculin-blue-striped": "basculin",
   "basculin-red-striped": "basculin",
   "darmanitan-standard": "darmanitan",
@@ -339,15 +393,16 @@ export const nationalToBW2PokemonMapping = {
   "shaymin-sky": "shaymin",
 };
 
+// Function to filter Pokémon based on current dex type
 export const filterPokemonByPokedexType = (
-  pokemonArray,
-  pokedexType,
-  gameType,
-  bwUnovaPokedex,
-  bw2UnovaPokedex,
-  nationalPokedex
+  pokemonArray: PokemonStats[],
+  pokedexType: PokedexType,
+  gameType: GameType,
+  bwUnovaPokedex: string[],
+  bw2UnovaPokedex: string[],
+  nationalPokedex: string[]
 ) => {
-  let filteredPokemon = []; // Initialise an empty array for filtered Pokémon
+  let filteredPokemon: PokemonStats[] = []; // Initialise an empty array for filtered Pokémon
 
   if (pokedexType === "bwRegional") {
     filteredPokemon = pokemonArray
@@ -366,7 +421,10 @@ export const filterPokemonByPokedexType = (
         // Get the index in the BW Unova Pokédex
         const idInBW = bwUnovaPokedex.indexOf(bwName);
         // Pad ID with zeros and add to stats
-        return { ...pokemonStats, id: idInBW.toString().padStart(3, "0") };
+        return {
+          ...pokemonStats,
+          id: Number(idInBW.toString().padStart(3, "0")),
+        };
       })
       .sort((a, b) => a.id - b.id); // Sort by ID
   } else if (pokedexType === "national") {
@@ -388,7 +446,7 @@ export const filterPokemonByPokedexType = (
           // Pad ID with zeros and add to stats
           return {
             ...pokemonStats,
-            id: (nationalId + 1).toString().padStart(3, "0"),
+            id: Number((nationalId + 1).toString().padStart(3, "0")),
           };
         })
         .sort((a, b) => a.id - b.id); // Sort by ID
@@ -410,7 +468,7 @@ export const filterPokemonByPokedexType = (
           // Pad ID with zeros and add to stats
           return {
             ...pokemonStats,
-            id: (nationalId + 1).toString().padStart(3, "0"),
+            id: Number((nationalId + 1).toString().padStart(3, "0")),
           };
         })
         .sort((a, b) => a.id - b.id); // Sort by ID
@@ -431,7 +489,10 @@ export const filterPokemonByPokedexType = (
         // Get the index in the BW2 Unova Pokédex
         const idInBW2 = bw2UnovaPokedex.indexOf(bw2Name);
         // Pad ID with zeros and add to stats
-        return { ...pokemonStats, id: idInBW2.toString().padStart(3, "0") };
+        return {
+          ...pokemonStats,
+          id: Number(idInBW2.toString().padStart(3, "0")),
+        };
       })
       .sort((a, b) => a.id - b.id); // Sort by ID
   }
@@ -440,85 +501,100 @@ export const filterPokemonByPokedexType = (
 };
 
 // Function to get the move sets of a Pokémon
-export const getMoveSets = (pokemonMoves) => {
+export const getMoveSets = (
+  pokemonMoves: { move: { name: string } }[]
+): string[] => {
   return pokemonMoves.map((move) => move.move.name); // Map each move to its name
 };
 
 // Function to get the abilities of a Pokémon
-export const getAbilities = (pokemonAbilities) => {
+export const getAbilities = (
+  pokemonAbilities: { ability: { name: string } }[]
+): string[] => {
   // Map each ability to its name
   return pokemonAbilities.map((ability) => ability.ability.name);
 };
 
 // Function to get the types of a Pokémon
-export const getPokemonTypes = (pokemonStats) => {
-  /* Check if the Pokémon is a form of Rotom. A separate function is written for
+export const getPokemonTypes = (pokemonStats: PokemonStats): string[] => {
+  /* Check if Pokémon is a form of Rotom. A separate function is written for
   Rotom specifically as its multiple formes with different types was causing
   issues when fetching all formes */
   const isRotom = pokemonStats.name.startsWith("rotom-");
 
-  // If it is, join type names with a comma
+  // If Pokémon is Rotom, return the names of its current types
   if (isRotom) {
-    return (pokemonStats.types || []).map((type) => type.type.name).join(", ");
+    return (pokemonStats.types || []).map((type) => type.type.name);
   }
 
+  // Check if Pokémon has past types
   const hasPastTypes =
     pokemonStats.past_types &&
     Array.isArray(pokemonStats.past_types) &&
-    pokemonStats.past_types.length > 0; // Check if the Pokémon has past types
+    pokemonStats.past_types.length > 0;
 
+  // If it has past types, return all past type names
   if (hasPastTypes) {
-    return pokemonStats.past_types
-      .map((pastType) =>
-        pastType.types.map((type) => type.type.name).join(", ")
-      )
-      .join(", "); // If it does, join past type names with a comma
+    return pokemonStats.past_types.flatMap((pastType) =>
+      pastType.types.map((type) => type.type.name)
+    );
   } else {
-    // If not, join current type names with a comma
-    return (pokemonStats.types || []).map((type) => type.type.name).join(", ");
+    // Otherwise, return current type names
+    return (pokemonStats.types || []).map((type) => type.type.name);
   }
 };
 
 // Function to get the type images for a Pokémon
-export const getPokemonTypeImages = (pokemonStats) => {
-  // Check if the Pokémon is a form of Rotom
+export const getPokemonTypeImages = (
+  pokemonStats: PokemonStats
+): TypeImage[] => {
+  // Check if Pokémon is a form of Rotom.
   const isRotom = pokemonStats.name.startsWith("rotom-");
 
+  // If Pokémon is Rotom, return its type images with the name
   if (isRotom) {
     return (pokemonStats.types || []).map((type) => ({
-      image: getTypeImage(type.type.name), // Get the type image for each type
+      name: type.type.name,
+      image: getTypeImage(type.type.name) || "",
     }));
   }
 
+  // Check if Pokémon has past types
   const hasPastTypes =
     pokemonStats.past_types &&
     Array.isArray(pokemonStats.past_types) &&
-    pokemonStats.past_types.length > 0; // Check if the Pokémon has past types
+    pokemonStats.past_types.length > 0;
 
+  // If Pokémon has past types, return their images and names
   if (hasPastTypes) {
-    return pokemonStats.past_types.map((pastType) => ({
-      image: getTypeImage(
-        pastType.types.map((type) => type.type.name).join(", ")
-      ),
-    })); // If it does, get the type image for each past type
+    return pokemonStats.past_types.flatMap((pastType) =>
+      pastType.types.map((type) => ({
+        name: type.type.name,
+        image: getTypeImage(type.type.name) || "",
+      }))
+    );
   } else {
+    // If no past types, return the current type images and names
     return (pokemonStats.types || []).map((type) => ({
-      image: getTypeImage(type.type.name),
-    })); // If not, get the type image for each current type
+      name: type.type.name,
+      image: getTypeImage(type.type.name) || "", // Provide fallback for undefined
+    }));
   }
 };
 
 // Function to fetch all natures and update the allNatures state
-export const getAllNatures = async (setAllNatures) => {
+export const getAllNatures = async (
+  setAllNatures: React.Dispatch<React.SetStateAction<NatureData[]>>
+) => {
   try {
     const res = await fetch(
       "https://pokeapi.co/api/v2/nature?limit=25&offset=0"
     ); // Fetch nature data from nature API endpoint
     const data = await res.json(); // Parse the response as JSON
     // Get URLs for each nature
-    const natureUrls = data.results.map((nature) => nature.url);
+    const natureUrls = data.results.map((nature: NatureData) => nature.url);
 
-    const natureDataPromises = natureUrls.map(async (url) => {
+    const natureDataPromises = natureUrls.map(async (url: string) => {
       const res = await fetch(url); // Fetch data for each nature
       return res.json(); // Parse the response as JSON
     });
@@ -557,7 +633,7 @@ export const alternateFormesMapping = {
 };
 
 // Function to capitalise each word and join with '-', mainly used for Pokémon names
-export const capitaliseEachWord = (str) => {
+export const capitaliseEachWord = (str: string) => {
   return str
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -565,7 +641,7 @@ export const capitaliseEachWord = (str) => {
 };
 
 // Function to update the total number of Pokémon value based on the Pokédex type
-export const getPokedexTypeNumber = (pokedexType) => {
+export const getPokedexTypeNumber = (pokedexType: PokedexType) => {
   if (pokedexType === "bwRegional") {
     return "156";
   } else if (pokedexType === "bw2Regional") {
@@ -575,7 +651,7 @@ export const getPokedexTypeNumber = (pokedexType) => {
   }
 };
 
-//   !!!POKEMONCARD!!!   //
+//   !!!POKELIST!!!   //
 
 // Function to play hover sound when hovering over a Pokémon card
 export const playHoverSound = () => {
@@ -594,7 +670,11 @@ export const teamItem = {
 };
 
 // Function to add a Pokémon to the team builder
-export const addToTeam = (pokemon, team, setTeam) => {
+export const addToTeam = (
+  pokemon: PokemonStats,
+  team: TeamItem[],
+  setTeam: React.Dispatch<React.SetStateAction<TeamItem[]>>
+) => {
   // If the team has less than 6 Pokémon, get the Pokémon, add it, and update team state
   if (team.length < 6 && !team.find((item) => item.pokemon === pokemon)) {
     setTeam([...team, { ...teamItem, pokemon }]);
@@ -602,7 +682,11 @@ export const addToTeam = (pokemon, team, setTeam) => {
 };
 
 // Function to remove a Pokémon from the team builder
-export const removeFromTeam = (pokemon, team, setTeam) => {
+export const removeFromTeam = (
+  pokemon: PokemonStats,
+  team: TeamItem[],
+  setTeam: React.Dispatch<React.SetStateAction<TeamItem[]>>
+) => {
   // Filter the team array to exclude the selected Pokémon
   const updatedTeam = team.filter((item) => item.pokemon !== pokemon);
   // Update the team state with the filtered array
@@ -610,7 +694,11 @@ export const removeFromTeam = (pokemon, team, setTeam) => {
 };
 
 // Function to toggle the shiny status of a Pokémon in the team
-export const toggleShiny = (pokemon, team, setTeam) => {
+export const toggleShiny = (
+  pokemon: PokemonStats,
+  team: TeamItem[],
+  setTeam: React.Dispatch<React.SetStateAction<TeamItem[]>>
+) => {
   // Map through the team array and toggle the isShiny property for the specified Pokémon
   const updatedTeam = team.map((item) => {
     if (item.pokemon === pokemon) {
@@ -629,11 +717,11 @@ export const captureTeamBuilder = () => {
   // Get the team builder container element by its ID
   const teamBuilderContainer = document.getElementById("capture");
 
-  // Set the background image of the team builder container
-  teamBuilderContainer.style.backgroundImage =
-    "url('src/images/BW2BACKGROUND.png')";
-
   if (teamBuilderContainer) {
+    // Set the background image of the team builder container
+    teamBuilderContainer.style.backgroundImage =
+      "url('src/images/BW2BACKGROUND.png')";
+
     // Use html2canvas to capture the container as a canvas
     html2canvas(teamBuilderContainer, {
       allowTaint: true, // Allow cross-origin images
@@ -657,9 +745,9 @@ export const captureTeamBuilder = () => {
 
 // Function to toggle the visibility of a dropdown menu
 export const toggleDropdown = (
-  index,
-  isDropdownVisible,
-  setDropdownVisible
+  index: number, // The index of the dropdown
+  isDropdownVisible: boolean[], // Array representing visibility state for each dropdown
+  setDropdownVisible: (visibility: boolean[]) => void
 ) => {
   // Copy of the visibility array
   const updatedDropdowns = [...isDropdownVisible];
@@ -671,9 +759,11 @@ export const toggleDropdown = (
 
 // Function to handle the selection of a Pokéball type for a Pokémon
 export const handlePokeballSelection = (
-  pokemonName,
-  pokeballType,
-  setSelectedPokeballs
+  pokemonName: string,
+  pokeballType: PokeballType,
+  setSelectedPokeballs: React.Dispatch<
+    React.SetStateAction<Record<string, PokeballType>>
+  >
 ) => {
   // Update the selected Pokéballs state with the new selection
   setSelectedPokeballs((prevSelected) => ({
@@ -683,7 +773,7 @@ export const handlePokeballSelection = (
 };
 
 // Pokéball types images map
-export const pokeballTypes = [
+export const pokeballTypes: { type: PokeballType; image: string }[] = [
   { type: "pokeball", image: pokeball },
   { type: "greatball", image: greatball },
   { type: "ultraball", image: ultraball },
@@ -713,7 +803,7 @@ export const pokeballTypes = [
 ];
 
 // Function to get Pokéball image based on Pokéball type
-export const getSelectedPokeballImage = (pokeballType) => {
+export const getSelectedPokeballImage = (pokeballType: PokeballType) => {
   switch (pokeballType) {
     case "greatball":
       return greatball;
@@ -771,18 +861,24 @@ export const getSelectedPokeballImage = (pokeballType) => {
 };
 
 // Function to open modal of selected Pokémon
-export const openModal = (pokemon, setSelectedPokemon, setModalIsOpen) => {
+export const openModal = (
+  pokemon: PokemonStats,
+  setSelectedPokemon: React.Dispatch<React.SetStateAction<PokemonStats | null>>,
+  setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+) => {
   setSelectedPokemon(pokemon); // Set selectedPokemon state to selected Pokémon
   setModalIsOpen(true); // Set modalIsOpen state to true
 };
 
 // Function to handle the selection of a move for a Pokémon
 export const handleMoveSelection = (
-  pokemon,
-  selectedMove,
-  dropdownIndex,
-  selectedMoves,
-  setSelectedMoves
+  pokemon: PokemonStats,
+  selectedMove: string,
+  dropdownIndex: number,
+  selectedMoves: Record<string, Record<number, string>>,
+  setSelectedMoves: React.Dispatch<
+    React.SetStateAction<Record<string, Record<number, string>>>
+  >
 ) => {
   // Create a copy of the current selected moves
   const updatedSelectedMoves = { ...selectedMoves };
@@ -802,10 +898,9 @@ export const handleMoveSelection = (
 
 // Function to handle changing the name of a Pokémon in the name bar
 export const handleNameChange = (
-  pokemon,
-  currentEditedNames,
-  newName,
-  setEditedNames
+  pokemon: PokemonStats,
+  newName: string,
+  setEditedNames: React.Dispatch<React.SetStateAction<Record<string, string>>>
 ) => {
   // Update the state with the new name for the specified Pokémon
   setEditedNames((prevNames) => ({
@@ -815,8 +910,11 @@ export const handleNameChange = (
 };
 
 // Function to get the stats affected by a chosen nature
-export const getAffectedStats = (natureName, allNatures) => {
-  // If no nature is specified, return default values indicating no stat changes
+export const getAffectedStats = (
+  natureName: string | null,
+  allNatures: NatureData[]
+) => {
+  // If no nature name is specified, return default values indicating no stat changes
   if (!natureName) {
     return { increasedStat: "", decreasedStat: "", noStatChanges: true };
   }
@@ -852,7 +950,7 @@ export const getAffectedStats = (natureName, allNatures) => {
 //      !!!MODAL!!!     //
 
 // Function to fetch data for a specific move from the API
-export const fetchMoveData = async (moveName) => {
+export const fetchMoveData = async (moveName: string) => {
   try {
     // Make an API request to fetch data for the chosen move
     const res = await fetch(`https://pokeapi.co/api/v2/move/${moveName}/`);
@@ -865,7 +963,7 @@ export const fetchMoveData = async (moveName) => {
 };
 
 // Function to fetch data for a specific ability from the API
-export const fetchAbilityData = async (abilityName) => {
+export const fetchAbilityData = async (abilityName: string) => {
   try {
     // Make an API request to fetch data for the chosen ability
     const res = await fetch(
@@ -881,28 +979,24 @@ export const fetchAbilityData = async (abilityName) => {
 
 // Function to handle clicking on a move in a Pokémon's modal
 export function handleMoveClick(
-  moveName,
-  fetchMoveData,
-  setSelectedMove,
-  moveDetailsModalHandler
+  moveName: string,
+  fetchMoveData: (moveName: string) => Promise<MoveData | null>,
+  setSelectedMove: React.Dispatch<React.SetStateAction<MoveData | null>>
 ) {
   // Fetch the move data and then update the state and show the modal
-  fetchMoveData(moveName).then((data) => {
-    setSelectedMove(data); // Update the selected move state with the fetched data
-    moveDetailsModalHandler(); // Show in the move details modal
+  fetchMoveData(moveName).then((data: MoveData | null) => {
+    if (data) setSelectedMove(data); // Update the selected move state with the fetched data
   });
 }
 
 // Function to handle clicking on an ability in a Pokémon's modal
 export function handleAbilityClick(
-  abilityName,
-  fetchAbilityData,
-  setSelectedAbility,
-  abilityDetailsModalHandler
+  abilityName: string,
+  fetchAbilityData: (abilityName: string) => Promise<AbilityData | null>,
+  setSelectedAbility: React.Dispatch<React.SetStateAction<AbilityData | null>>
 ) {
   // Fetch the ability data and then update the state and show the modal
-  fetchAbilityData(abilityName).then((data) => {
-    setSelectedAbility(data); // Update the selected ability state with the fetched data
-    abilityDetailsModalHandler(); // Show in the ability details modal
+  fetchAbilityData(abilityName).then((data: AbilityData | null) => {
+    if (data) setSelectedAbility(data); // Update the selected ability state with the fetched data
   });
 }

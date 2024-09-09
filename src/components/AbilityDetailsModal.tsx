@@ -1,7 +1,8 @@
-import "./styles.css";
+import "../css/styles.css";
 import moveslotimage from "../images/slots/moveslot.png";
 import selectedMoveslotImage from "../images/slots/move slot green highlight.png";
-import { fetchAbilityData } from "./utils";
+import { fetchAbilityData } from "../utils/utils.ts";
+import { AbilityDetailsModalProps } from "../utils/interfaces.ts";
 
 function AbilityDetailsModal({
   abilities,
@@ -9,8 +10,7 @@ function AbilityDetailsModal({
   abilityData,
   handleAbilityClick,
   setSelectedAbility,
-  abilityDetailsModalHandler,
-}) {
+}: AbilityDetailsModalProps) {
   return (
     <div className="ability-full-container">
       <div className="move-ability-container">
@@ -35,7 +35,11 @@ function AbilityDetailsModal({
               }`}
               key={abilities}
               onClick={() => {
-                handleAbilityClick(abilities);
+                handleAbilityClick(
+                  abilities,
+                  fetchAbilityData,
+                  setSelectedAbility
+                );
               }}
             >
               <img
@@ -57,8 +61,7 @@ function AbilityDetailsModal({
                   handleAbilityClick(
                     abilities,
                     fetchAbilityData,
-                    setSelectedAbility,
-                    abilityDetailsModalHandler
+                    setSelectedAbility
                   );
                 }}
               >

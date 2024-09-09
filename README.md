@@ -47,7 +47,9 @@ the PokéAPI devs). I hope to make this better and better so any suggestions are
 ### Built With
 
 - [![React][React.js]][React-url]
-- [![JavaScript][JavaScript]][JavaScript-url]
+- [![TypeScript][TypeScript]][TypeScript-url]
+- [![Vite][Vite]][Vite-url]
+- [![ESLint][ESLint]][ESLint-url]
 - [![Prettier][Prettier]][Prettier-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -71,8 +73,12 @@ the PokéAPI devs). I hope to make this better and better so any suggestions are
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[JavaScript]: https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E
-[JavaScript-url]: https://www.javascript.com/
+[TypeScript]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[Vite]: https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E
+[Vite-url]: https://vitejs.dev/
+[ESLint]: https://img.shields.io/badge/eslint-3A33D1?style=for-the-badge&logo=eslint&logoColor=white
+[ESLint-url]: https://eslint.org/
 [Prettier]: https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E
 [Prettier-url]: https://prettier.io/
 [unovadex-one]: src/images/screenshots/unovadex-one.png

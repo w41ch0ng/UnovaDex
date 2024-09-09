@@ -1,10 +1,12 @@
-import "./styles.css";
-import { useContext } from "react";
-import { TypeImageContext } from "./PokeList";
-import { DmgClassImageContext } from "./PokeList";
+import "../css/styles.css";
 import moveslotimage from "../images/slots/moveslot.png";
 import selectedMoveslotImage from "../images/slots/move slot green highlight.png";
-import { fetchMoveData } from "./utils";
+import {
+  fetchMoveData,
+  getTypeImage,
+  getDmgClassImage,
+} from "../utils/utils.ts";
+import { MoveDetailsModalProps } from "../utils/interfaces.ts";
 
 function MoveDetailsModal({
   moves,
@@ -12,18 +14,13 @@ function MoveDetailsModal({
   handleMoveClick,
   moveData,
   setSelectedMove,
-  moveDetailsModalHandler,
-}) {
-  const { getTypeImage } = useContext(TypeImageContext);
-  const { getDmgClassImage } = useContext(DmgClassImageContext);
-  // const [hoveredMove, setHoveredMove] = useState(null);
-
-  // Check if 'moveData' contains 'effect_entries' to display and that it is not empty.
+}: MoveDetailsModalProps) {
+  // Check if 'moveData' contains 'effect_entries' to display and that it's not empty.
   const hasEffectEntries =
     moveData.effect_entries && moveData.effect_entries.length > 0;
 
   /* Check if first entry in 'effect_entries' contains '$effect_chance'
-  (chance of the move's effect occurring). */
+  (chance of move's effect occurring). */
   const hasEffectChance =
     hasEffectEntries &&
     moveData.effect_entries[0].short_effect.includes("$effect_chance");
@@ -93,12 +90,7 @@ function MoveDetailsModal({
                 selectedMove && selectedMove.name === move ? "selected" : ""
               }`}
               onClick={() => {
-                handleMoveClick(
-                  move,
-                  fetchMoveData,
-                  setSelectedMove,
-                  moveDetailsModalHandler
-                );
+                handleMoveClick(move, fetchMoveData, setSelectedMove);
               }}
             >
               <img

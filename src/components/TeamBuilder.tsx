@@ -1,48 +1,53 @@
-import React, { useState, useRef, useContext } from "react";
-import Modal from "./Modal";
-import "./styles.css";
-import { CapitaliseEachWordContext } from "./PokeList";
+import { useState, useRef } from "react";
+import Modal from "./Modal.tsx";
+import "../css/styles.css";
 import {
-  handlePokeballSelection,
   toggleDropdown,
-  pokeballTypes,
-  getSelectedPokeballImage,
   openModal,
   handleMoveSelection,
   handleNameChange,
   getAffectedStats,
-} from "./utils";
+  handlePokeballSelection,
+  pokeballTypes,
+  getSelectedPokeballImage,
+  capitaliseEachWord,
+} from "../utils/utils.ts";
 import xButton from "../images/sprites/redxbutton.png";
 import shinyCharm from "../images/sprites/shinycharm.png";
 import shinyCharmInverted from "../images/sprites/shinycharminverted.png";
 import teamslotbw2 from "../images/slots/team slot bw2.png";
 import question from "../images/sprites/question mark GIF.gif";
+import { TeamBuilderProps, PokemonStats } from "../utils/interfaces.ts";
+import { PokeballType } from "../utils/types.ts";
 
 function TeamBuilder({
   team,
   setTeam,
   removeFromTeam,
   toggleShiny,
-  addToTeam,
-  moveSets,
   getMoveSets,
   getAbilities,
   allNatures,
   getPokemonTypes,
   getPokemonTypeImages,
-}) {
-  const { capitaliseEachWord } = useContext(CapitaliseEachWordContext);
-
-  const [isDropdownVisible, setDropdownVisible] = useState(
+}: TeamBuilderProps) {
+  const [isDropdownVisible, setDropdownVisible] = useState<boolean[]>(
     Array(6).fill(false)
   );
-
-  const [selectedMoves, setSelectedMoves] = useState({});
-  const [editedNames, setEditedNames] = useState({});
-  const [selectedNatures, setSelectedNatures] = useState({});
-  const [selectedPokeballs, setSelectedPokeballs] = useState({});
+  const [selectedMoves, setSelectedMoves] = useState<
+    Record<string, Record<number, string>>
+  >({});
+  const [editedNames, setEditedNames] = useState<Record<string, string>>({});
+  const [selectedNatures, setSelectedNatures] = useState<
+    Record<string, string>
+  >({});
+  const [selectedPokeballs, setSelectedPokeballs] = useState<
+    Record<string, PokeballType>
+  >({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [selectedPokemon, setSelectedPokemon] = useState<PokemonStats | null>(
+    null
+  );
   const dropdownRef = useRef(null);
 
   return (
@@ -94,7 +99,7 @@ function TeamBuilder({
                             className="item"
                             onClick={() =>
                               handlePokeballSelection(
-                                teamItem.pokemon.name,
+                                teamItem.pokemon?.name,
                                 ball.type,
                                 setSelectedPokeballs
                               )
@@ -116,7 +121,6 @@ function TeamBuilder({
                       onChange={(e) =>
                         handleNameChange(
                           teamItem.pokemon,
-                          editedNames,
                           e.target.value,
                           setEditedNames
                         )
@@ -341,10 +345,10 @@ function TeamBuilder({
               .animated.back_shiny
           }
           name={selectedPokemon.name.replace(/^./, (str) => str.toUpperCase())}
-          isLegendary={selectedPokemon.is_legendary}
+          is_legendary={selectedPokemon.is_legendary}
           type={getPokemonTypes(selectedPokemon)}
           typeImages={getPokemonTypeImages(selectedPokemon)}
-          typeImagesClassName="type-image-container"
+          //typeImagesClassName="type-image-container"
           weight={selectedPokemon.weight}
           height={selectedPokemon.height}
           stats={selectedPokemon.stats

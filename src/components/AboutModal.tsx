@@ -1,7 +1,8 @@
 import redXbutton from "../images/sprites/redxbutton.png";
-import "./styles.css";
+import "../css/styles.css";
+import { AboutModalProps } from "../utils/interfaces";
 
-function AboutModal({ closeAboutModalHandler }) {
+function AboutModal({ closeAboutModalHandler }: AboutModalProps) {
   return (
     <div className="about-modal">
       <div className="close-about-modal" onClick={closeAboutModalHandler}>
