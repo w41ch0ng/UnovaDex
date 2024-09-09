@@ -386,7 +386,7 @@ body {
   font-family: "PokeFont";
   font-weight: 600;
   src: url("/src/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
-  background-image: url("/src/images/backgrounds/team\ slot\ bg.png");
+  background-image: url("../images/team\ slot\ bg.png");
   background-size: 22%;
   position: absolute;
   left: 20%;
@@ -473,7 +473,7 @@ body {
   width: 100%;
   margin: 2px;
   font-weight: 600;
-  background-image: url("/src/images/backgrounds/team\ slot\ bg.png");
+  background-image: url("../images/backgrounds/team\ slot\ bg.png");
   background-size: 72%;
   color: white;
   border: 2px solid white;
