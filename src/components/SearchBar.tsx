@@ -1,13 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import redXbutton from "../images/sprites/redxbutton.png";
+import { SearchBarProps } from "../utils/interfaces";
 
-function SearchBar({ onSearch, allPokemon }) {
+function SearchBar({ onSearch, allPokemon }: SearchBarProps) {
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Function to handle search when searching Pokémon
-  const handleSearch = () => {
-    onSearch(searchTerm, allPokemon);
-  };
 
   // Function to handle clearing the search input
   const handleClearSearch = () => {
@@ -17,7 +13,7 @@ function SearchBar({ onSearch, allPokemon }) {
   };
 
   // Function to handle changes in the search input field
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Retrieves the new search term from the input field's value
     const newSearchTerm = e.target.value;
     // Updates the searchTerm state with the new search term

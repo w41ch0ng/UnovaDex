@@ -1,14 +1,15 @@
-import React, { useContext, useState } from "react";
-import "./styles.css";
-import Modal from "./Modal";
-import { CapitaliseEachWordContext } from "./PokeList";
+import { useState } from "react";
+import "../css/styles.css";
+import Modal from "./Modal.tsx";
 import pokedexentry from "../images/slots/pokedexentry.png";
 import addButtonImage from "../images/slots/moveslot.png";
-import { playHoverSound } from "./utils";
+import { playHoverSound, capitaliseEachWord } from "../utils/utils.ts";
+import { PokeListProps } from "../utils/interfaces.ts";
 
-function PokemonCard({
+function PokeList({
   id,
   name,
+  is_legendary,
   icon,
   homeImage,
   animatedImage,
@@ -16,19 +17,21 @@ function PokemonCard({
   shinyAnimatedImage,
   shinyAnimatedImageBack,
   abilities,
-  type,
-  typeImages,
+  //type,
+  //typeImages,
+  getPokemonTypes,
+  getPokemonTypeImages,
   weight,
   height,
   stats,
   statsName,
   moves,
-  forms,
+  //forms,
   onAddToTeam,
   team,
   pokemon,
   setTeam,
-}) {
+}: PokeListProps) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // Function to open the modal for a Pokémon
@@ -40,8 +43,6 @@ function PokemonCard({
   function closeModalHandler() {
     setModalIsOpen(false);
   }
-
-  const { capitaliseEachWord } = useContext(CapitaliseEachWordContext);
 
   return (
     <div className="pokemon-container">
@@ -80,6 +81,7 @@ function PokemonCard({
         <Modal
           id={id}
           name={name}
+          is_legendary={is_legendary}
           icon={icon}
           homeImage={homeImage}
           animatedImage={animatedImage}
@@ -91,10 +93,10 @@ function PokemonCard({
           height={height}
           stats={stats}
           statsName={statsName}
-          type={type}
-          typeImages={typeImages}
+          type={getPokemonTypes}
+          typeImages={getPokemonTypeImages}
           moves={moves}
-          forms={forms}
+          //forms={forms}
           onClick={closeModalHandler}
         />
       )}
@@ -102,4 +104,4 @@ function PokemonCard({
   );
 }
 
-export default PokemonCard;
+export default PokeList;

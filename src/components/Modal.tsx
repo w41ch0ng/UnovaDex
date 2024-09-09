@@ -1,45 +1,44 @@
 import pokeball from "../images/pokeballs/Poke_Ball.png";
 import battle from "../images/backgrounds/poke bg 1.jpeg";
 import redXbutton from "../images/sprites/redxbutton.png";
-import "./styles.css";
-import MoveDetailsModal from "./MoveDetailsModal";
-import AbilityDetailsModal from "./AbilityDetailsModal";
-import React, { useContext, useState, useEffect } from "react";
-import { CapitaliseEachWordContext } from "./PokeList";
+import "../css/styles.css";
+import MoveDetailsModal from "./MoveDetailsModal.tsx";
+import AbilityDetailsModal from "./AbilityDetailsModal.tsx";
+import { useState, useEffect } from "react";
 import {
   fetchMoveData,
   fetchAbilityData,
   handleMoveClick,
   handleAbilityClick,
-} from "./utils";
+  capitaliseEachWord,
+} from "../utils/utils.ts";
+import { ModalProps, MoveData, AbilityData } from "../utils/interfaces.ts";
 
 function Modal({
   onClick,
   id,
   name,
+  //is_legendary,
   icon,
-  homeImage,
+  //homeImage,
   animatedImage,
   animatedImageBack,
   shinyAnimatedImage,
   shinyAnimatedImageBack,
   abilities,
-  type,
+  //type,
   typeImages,
-  weight,
-  height,
+  //weight,
+  //height,
+  //forms,
   stats,
   statsName,
   moves,
-  moveData,
-  abilityData,
-}) {
-  const [moveDetailsModalIsOpen, setMoveDetailsModalIsOpen] = useState(false);
-  const [abilityDetailsModalIsOpen, setAbilityDetailsModalIsOpen] =
-    useState(false);
-  const [selectedMove, setSelectedMove] = useState(null);
-  const [selectedAbility, setSelectedAbility] = useState(null);
-  const { capitaliseEachWord } = useContext(CapitaliseEachWordContext);
+}: ModalProps) {
+  const [selectedMove, setSelectedMove] = useState<MoveData | null>(null);
+  const [selectedAbility, setSelectedAbility] = useState<AbilityData | null>(
+    null
+  );
 
   // useEffect hook for when 'moves' or 'abilities' change
   useEffect(() => {
@@ -49,8 +48,6 @@ function Modal({
       fetchMoveData(moves[0]).then((data) => {
         // Set the fetched data as the selected move
         setSelectedMove(data);
-        // Update modal displaying the move details
-        moveDetailsModalHandler();
       });
     }
 
@@ -60,24 +57,10 @@ function Modal({
       fetchAbilityData(abilities[0]).then((data) => {
         // Set the fetched data as the selected ability
         setSelectedAbility(data);
-        // Update modal displaying the ability details
-        abilityDetailsModalHandler();
       });
     }
     // Re-run when either moves or abilities arrays changes.
   }, [moves, abilities]);
-
-  // Function to open the move details modal
-  function moveDetailsModalHandler() {
-    // Set the state to indicate that the move details modal is open
-    setMoveDetailsModalIsOpen(true);
-  }
-
-  // Function to open the ability details modal
-  function abilityDetailsModalHandler() {
-    // Set the state to indicate that the ability details modal is open
-    setAbilityDetailsModalIsOpen(true);
-  }
 
   return (
     <div className="modal">
@@ -94,7 +77,6 @@ function Modal({
               {typeImages.map((type, index) => (
                 <p key={index}>
                   <img src={type.image} alt={type.name} />
-                  {type.name}
                 </p>
               ))}
             </div>
@@ -150,13 +132,9 @@ function Modal({
               selectedMove={selectedMove}
               moveData={selectedMove}
               handleMoveClick={(moveName) =>
-                handleMoveClick(
-                  moveName,
-                  fetchMoveData,
-                  setSelectedMove,
-                  moveDetailsModalHandler
-                )
+                handleMoveClick(moveName, fetchMoveData, setSelectedMove)
               }
+              setSelectedMove={setSelectedMove}
             />
           )}
           {selectedAbility && (
@@ -168,10 +146,10 @@ function Modal({
                 handleAbilityClick(
                   abilityName,
                   fetchAbilityData,
-                  setSelectedAbility,
-                  abilityDetailsModalHandler
+                  setSelectedAbility
                 )
               }
+              setSelectedAbility={setSelectedAbility}
             />
           )}
         </div>

@@ -2,24 +2,20 @@
   "name": "unovadex",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^5.3.2",
     "html2canvas": "^1.4.1",
-    "pokemon-sprites": "github:PokeAPI/sprites",
-    "react": "^18.2.0",
-    "react-bootstrap": "^2.9.1",
-    "react-dom": "^18.2.0",
-    "react-dropdown": "^1.11.0",
-    "react-scripts": "^5.0.1"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "browserslist": {
     "production": [
@@ -34,6 +30,18 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@eslint/js": "^9.9.0",
+    "@types/node": "^18.18.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "globals": "^15.9.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.0.1",
+    "vite": "^5.4.1"
   }
 }
