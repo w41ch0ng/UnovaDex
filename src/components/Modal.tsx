@@ -1,5 +1,5 @@
 import pokeball from "../images/pokeballs/Poke_Ball.png";
-import battle from "../images/backgrounds/poke bg 1.jpeg";
+import battle from "../images/backgrounds/poke-bg-1.jpeg";
 import redXbutton from "../images/sprites/redxbutton.png";
 import "../css/styles.css";
 import MoveDetailsModal from "./MoveDetailsModal.tsx";

@@ -13,7 +13,7 @@ a {
 
 @font-face {
   font-family: "PokeFont";
-  src: url("/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
+  src: url("/fonts/Truth-And-Ideals-Normal.ttf") format("truetype");
 }
 
 body {
@@ -385,7 +385,7 @@ body {
 .team-slot-name {
   font-family: "PokeFont";
   font-weight: 600;
-  src: url("/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
+  src: url("/fonts/Truth-And-Ideals-Normal.ttf") format("truetype");
   background-image: url("/images/team-slot-bg.png");
   background-size: 22%;
   position: absolute;
@@ -468,7 +468,7 @@ body {
 .team-slot-nature-dropdown {
   text-transform: capitalize;
   font-family: "PokeFont";
-  src: url("/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
+  src: url("/fonts/Truth-And-Ideals-Normal.ttf") format("truetype");
   font-size: 10px;
   width: 100%;
   margin: 2px;
@@ -493,7 +493,7 @@ body {
 .team-slot-dropdown-options {
   text-transform: capitalize;
   font-family: "PokeFont";
-  src: url("/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
+  src: url("/fonts/Truth-And-Ideals-Normal.ttf") format("truetype");
   font-size: 12px;
   width: 100%;
   font-weight: 600;
@@ -519,7 +519,7 @@ body {
 .stat-reduction,
 .no-stat-changes {
   font-family: "PokeFont";
-  src: url("/fonts/Truth\ And\ Ideals-Normal.ttf") format("truetype");
+  src: url("/fonts/Truth-And-Ideals-Normal.ttf") format("truetype");
   color: white;
 }
 

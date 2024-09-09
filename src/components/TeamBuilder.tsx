@@ -15,8 +15,8 @@ import {
 import xButton from "../images/sprites/redxbutton.png";
 import shinyCharm from "../images/sprites/shinycharm.png";
 import shinyCharmInverted from "../images/sprites/shinycharminverted.png";
-import teamslotbw2 from "../images/slots/team slot bw2.png";
-import question from "../images/sprites/question mark GIF.gif";
+import teamslotbw2 from "../images/slots/team-slot-bw2.png";
+import question from "../images/sprites/question-mark-GIF.gif";
 import { TeamBuilderProps, PokemonStats } from "../utils/interfaces.ts";
 import { PokeballType } from "../utils/types.ts";
 
